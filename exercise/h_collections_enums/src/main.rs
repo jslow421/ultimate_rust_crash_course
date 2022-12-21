@@ -7,17 +7,37 @@
 // - `Bullseye`
 // - `Hit`, containing the distance from the center (an f64)
 // - `Miss`
-//
+enum Shot {
+    Bullseye,
+    Hit(f64),
+    Miss
+}
 // You will need to complete 1b as well before you will be able to run this program successfully.
 
 impl Shot {
     // Here is a method for the `Shot` enum you just defined.
     fn points(self) -> i32 {
+        use Shot::*;
         // 1b. Implement this method to convert a Shot into points
         // - return 5 points if `self` is a `Shot::Bullseye`
         // - return 2 points if `self` is a `Shot::Hit(x)` where x < 3.0
         // - return 1 point if `self` is a `Shot::Hit(x)` where x >= 3.0
         // - return 0 points if `self` is a Miss
+        match self {
+            Bullseye => {
+                5
+            }
+            Hit(x) => {
+                if x >= 3.0 {
+                    1
+                } else  {
+                    2
+                }
+            }
+            Miss => {
+                0
+            }
+        }
     }
 }
 
@@ -35,9 +55,25 @@ fn main() {
     //      - Between 1.0 and 5.0 -- `Shot::Hit(value)`
     //      - Greater than 5.0 -- `Shot::Miss`
 
+    for coord in arrow_coords {
+        coord.print_description();
+        let shot = coord.distance_from_center();
+
+
+        if shot > 5.0 {
+            shots.push(Shot::Miss)
+        } else if shot >= 1.0 && shot < 5.0 {
+            shots.push(Shot::Hit(shot))
+        } else {
+            shots.push(Shot::Bullseye)
+        }
+    }
 
     let mut total = 0;
     // 3. Finally, loop through each shot in shots and add its points to total
+    for item in shots {
+        total += item.points();
+    }
 
     println!("Final point total is: {}", total);
 }
@@ -60,7 +96,6 @@ impl Coord {
             self.x,
             self.y);
     }
-
 }
 
 // Generate some random coordinates
